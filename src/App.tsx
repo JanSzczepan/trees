@@ -16,8 +16,12 @@ function App() {
                   element={<Home />}
                />
                <Route
-                  path='/auth'
-                  element={<Auth />}
+                  path='/login'
+                  element={<Auth authState='login' />}
+               />
+               <Route
+                  path='/signup'
+                  element={<Auth authState='signup' />}
                />
             </Routes>
          </Container>
