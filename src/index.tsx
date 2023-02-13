@@ -6,13 +6,16 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { UserContextProvider } from './contexts/userContext'
+import { TreeContextProvider } from './contexts/treesContext'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
    <React.StrictMode>
       <BrowserRouter>
          <UserContextProvider>
-            <App />
+            <TreeContextProvider>
+               <App />
+            </TreeContextProvider>
          </UserContextProvider>
       </BrowserRouter>
    </React.StrictMode>
