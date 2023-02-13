@@ -13,9 +13,18 @@ import {
    signInWithEmailAndPassword,
    signOut,
 } from 'firebase/auth'
+import {
+   addDoc,
+   collection,
+   CollectionReference,
+   where,
+   query,
+   getDocs,
+   QuerySnapshot,
+} from 'firebase/firestore'
 import getUser, { User } from '../functions/getUser'
 import useLocalStorage from '../hooks/useLocalStorage/useLocalStorage'
-import { app } from '../firebase'
+import { app, db } from '../firebase'
 
 export type LoginFormInputs = {
    email: string
@@ -23,6 +32,8 @@ export type LoginFormInputs = {
 }
 export type SignupFormInputs = {
    userName: string
+   name: string
+   surname: string
 } & LoginFormInputs
 
 type UserContextType = {
@@ -60,25 +71,53 @@ type ProviderProps = {
 }
 
 export function UserContextProvider({ children }: ProviderProps) {
-   const [user, setUser] = useLocalStorage('user', getUser())
+   const [user, setUser] = useLocalStorage<User>('user', getUser())
    const [error, setError] = useState<string>('')
    const [isLoading, setIsLoading] = useState<boolean>(false)
 
    const navigate = useNavigate()
    const auth = getAuth(app)
+   const usersCollectionRef = useMemo(
+      () => collection(db, 'users') as CollectionReference<User>,
+      []
+   )
+
+   const getUserData = useCallback(
+      async (id: string) => {
+         try {
+            const q = query(usersCollectionRef, where('uid', '==', id))
+            const docs = (await getDocs(q)) as QuerySnapshot<User>
+
+            return docs.docs[0].data()
+         } catch (e: any) {
+            throw new Error(e.message)
+         }
+      },
+      [usersCollectionRef]
+   )
 
    const signup = useCallback(
-      ({ email, password }: SignupFormInputs) => {
+      ({ email, password, name, surname, userName }: SignupFormInputs) => {
          setIsLoading(true)
          setError('')
 
          createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                const { user: u } = userCredential as {
-                  user: { email: string }
+                  user: { email: string; uid: string }
                }
 
-               setUser(u)
+               await addDoc<User>(usersCollectionRef, {
+                  uid: u.uid,
+                  name,
+                  surname,
+                  userName,
+                  email,
+               })
+
+               const userData = await getUserData(u.uid)
+
+               setUser(userData)
                navigate('/')
                setIsLoading(false)
             })
@@ -89,7 +128,7 @@ export function UserContextProvider({ children }: ProviderProps) {
                setIsLoading(false)
             })
       },
-      [auth, navigate, setUser]
+      [auth, navigate, setUser, usersCollectionRef, getUserData]
    )
 
    const login = useCallback(
@@ -98,12 +137,14 @@ export function UserContextProvider({ children }: ProviderProps) {
          setError('')
 
          signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                const { user: u } = userCredential as {
-                  user: { email: string }
+                  user: { email: string; uid: string }
                }
 
-               setUser(u)
+               const userData = await getUserData(u.uid)
+
+               setUser(userData)
                navigate('/')
                setIsLoading(false)
             })
@@ -114,13 +155,13 @@ export function UserContextProvider({ children }: ProviderProps) {
                setIsLoading(false)
             })
       },
-      [auth, navigate, setUser]
+      [auth, navigate, setUser, getUserData]
    )
 
    const logout = useCallback(() => {
       signOut(auth)
          .then(() => {
-            setUser({ email: '' })
+            setUser({ email: '', name: '', surname: '', userName: '', uid: '' })
          })
          .catch((e) => {
             throw new Error(e)

@@ -13,6 +13,14 @@ function Auth({ authState }: AuthProps) {
    const { error, isLoading, login, signup } = useUserContext()
 
    const validation = yup.object().shape({
+      name:
+         authState === 'signup'
+            ? yup.string().required('Please enter your name.')
+            : yup.string(),
+      surname:
+         authState === 'signup'
+            ? yup.string().required('Please enter your surname.')
+            : yup.string(),
       userName:
          authState === 'signup'
             ? yup.string().required('Please enter your username.')
@@ -34,6 +42,8 @@ function Auth({ authState }: AuthProps) {
    } = useForm<SignupFormInputs>({
       resolver: yupResolver(validation),
       defaultValues: {
+         name: '',
+         surname: '',
          userName: '',
          email: '',
          password: '',
@@ -41,12 +51,14 @@ function Auth({ authState }: AuthProps) {
    })
 
    const onSubmit: SubmitHandler<SignupFormInputs> = ({
+      name,
+      surname,
       userName,
       email,
       password,
    }) => {
       if (authState === 'signup') {
-         signup({ userName, email, password })
+         signup({ name, surname, userName, email, password })
       } else if (authState === 'login') {
          login({ email, password })
       }
@@ -58,30 +70,80 @@ function Auth({ authState }: AuthProps) {
          onSubmit={handleSubmit(onSubmit)}
       >
          {authState === 'signup' && (
-            <Form.Group
-               className='mb-3'
-               controlId='userName'
-            >
-               <Form.Label>Username</Form.Label>
-               <Controller
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                     <>
-                        <Form.Control
-                           type='text'
-                           placeholder='Enter username'
-                           onChange={onChange}
-                           onBlur={onBlur}
-                           value={value}
-                        />
-                        {errors.userName && (
-                           <Form.Text>{errors.userName.message}</Form.Text>
-                        )}
-                     </>
-                  )}
-                  name='userName'
-               />
-            </Form.Group>
+            <>
+               <Form.Group
+                  className='mb-3'
+                  controlId='name'
+               >
+                  <Form.Label>Name</Form.Label>
+                  <Controller
+                     control={control}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <>
+                           <Form.Control
+                              type='text'
+                              placeholder='Enter name'
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                           />
+                           {errors.name && (
+                              <Form.Text>{errors.name.message}</Form.Text>
+                           )}
+                        </>
+                     )}
+                     name='name'
+                  />
+               </Form.Group>
+               <Form.Group
+                  className='mb-3'
+                  controlId='surname'
+               >
+                  <Form.Label>Surname</Form.Label>
+                  <Controller
+                     control={control}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <>
+                           <Form.Control
+                              type='text'
+                              placeholder='Enter surname'
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                           />
+                           {errors.surname && (
+                              <Form.Text>{errors.surname.message}</Form.Text>
+                           )}
+                        </>
+                     )}
+                     name='surname'
+                  />
+               </Form.Group>
+               <Form.Group
+                  className='mb-3'
+                  controlId='userName'
+               >
+                  <Form.Label>Username</Form.Label>
+                  <Controller
+                     control={control}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <>
+                           <Form.Control
+                              type='text'
+                              placeholder='Enter username'
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                           />
+                           {errors.userName && (
+                              <Form.Text>{errors.userName.message}</Form.Text>
+                           )}
+                        </>
+                     )}
+                     name='userName'
+                  />
+               </Form.Group>
+            </>
          )}
          <Form.Group
             className='mb-3'
