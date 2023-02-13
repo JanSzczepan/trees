@@ -1,33 +1,16 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Alert, Button, Form } from 'react-bootstrap'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import {
-   getAuth,
-   createUserWithEmailAndPassword,
-   signInWithEmailAndPassword,
-} from 'firebase/auth'
 import capitalizeFirstLetter from '../../functions/capitalizeFirstLetter'
-import { app } from '../../firebase'
-import { useUserContext } from '../../contexts/userContext'
+import { SignupFormInputs, useUserContext } from '../../contexts/userContext'
 
 type AuthProps = {
    authState: 'login' | 'signup'
 }
 
-type FormInputs = {
-   userName: string
-   email: string
-   password: string
-}
-
 function Auth({ authState }: AuthProps) {
-   const { setUser } = useUserContext()
-   const [error, setError] = useState<string>('')
-   const [isLoading, setIsLoading] = useState<boolean>(false)
-   const navigate = useNavigate()
+   const { error, isLoading, login, signup } = useUserContext()
 
    const validation = yup.object().shape({
       userName:
@@ -48,7 +31,7 @@ function Auth({ authState }: AuthProps) {
       control,
       handleSubmit,
       formState: { errors },
-   } = useForm<FormInputs>({
+   } = useForm<SignupFormInputs>({
       resolver: yupResolver(validation),
       defaultValues: {
          userName: '',
@@ -57,42 +40,15 @@ function Auth({ authState }: AuthProps) {
       },
    })
 
-   const auth = getAuth(app)
-
-   const onSubmit: SubmitHandler<FormInputs> = ({ email, password }) => {
-      setIsLoading(true)
-      setError('')
-
+   const onSubmit: SubmitHandler<SignupFormInputs> = ({
+      userName,
+      email,
+      password,
+   }) => {
       if (authState === 'signup') {
-         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-               const { user: u } = userCredential as { user: { email: string } }
-
-               setUser(u)
-               navigate('/')
-               setIsLoading(false)
-            })
-            .catch((e) => {
-               const errorMessage = e.message
-
-               setError(errorMessage)
-               setIsLoading(false)
-            })
+         signup({ userName, email, password })
       } else if (authState === 'login') {
-         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-               const { user: u } = userCredential as { user: { email: string } }
-
-               setUser(u)
-               navigate('/')
-               setIsLoading(false)
-            })
-            .catch((e) => {
-               const errorMessage = e.message
-
-               setError(errorMessage)
-               setIsLoading(false)
-            })
+         login({ email, password })
       }
    }
 

@@ -1,23 +1,11 @@
-import { getAuth, signOut } from 'firebase/auth'
 import { Container, Navbar, Nav, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useUserContext } from '../../contexts/userContext'
-import { app } from '../../firebase'
 
 function CustomNavbar() {
-   const { user, setUser } = useUserContext()
+   const { user, logout } = useUserContext()
 
-   const auth = getAuth(app)
-
-   const handleLogout = () => {
-      signOut(auth)
-         .then(() => {
-            setUser({ email: '' })
-         })
-         .catch((error) => {
-            throw new Error(error)
-         })
-   }
+   const handleLogout = () => logout()
 
    return (
       <Navbar
