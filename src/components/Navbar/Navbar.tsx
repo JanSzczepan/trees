@@ -15,7 +15,9 @@ function CustomNavbar() {
          variant='dark'
       >
          <Container>
-            <Navbar.Brand href='#home'>Trees</Navbar.Brand>
+            <Link to='/'>
+               <Navbar.Brand>Trees</Navbar.Brand>
+            </Link>
             <Navbar.Toggle aria-controls='responsive-navbar-nav' />
             <Navbar.Collapse id='responsive-navbar-nav'>
                <Nav className='ms-auto'>

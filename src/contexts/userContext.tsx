@@ -42,6 +42,7 @@ type UserContextType = {
    signup: (data: SignupFormInputs) => void
    login: (data: LoginFormInputs) => void
    logout: () => void
+   getUserData: (id: string) => Promise<User>
    isLoading: boolean
    error: string
 }
@@ -52,6 +53,13 @@ const UserContext = createContext<UserContextType>({
    signup: () => {},
    login: () => {},
    logout: () => {},
+   getUserData: async () => ({
+      email: '',
+      name: '',
+      surname: '',
+      userName: '',
+      uid: '',
+   }),
    isLoading: false,
    error: '',
 })
@@ -169,8 +177,17 @@ export function UserContextProvider({ children }: ProviderProps) {
    }, [auth, setUser])
 
    const value = useMemo(
-      () => ({ user, setUser, login, signup, logout, error, isLoading }),
-      [user, setUser, login, signup, logout, error, isLoading]
+      () => ({
+         user,
+         setUser,
+         login,
+         signup,
+         logout,
+         getUserData,
+         error,
+         isLoading,
+      }),
+      [user, setUser, login, signup, logout, getUserData, error, isLoading]
    )
 
    return <UserContext.Provider value={value}>{children}</UserContext.Provider>
