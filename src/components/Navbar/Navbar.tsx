@@ -1,4 +1,4 @@
-import { Container, Navbar, Nav, Button } from 'react-bootstrap'
+import { Container, Navbar, Nav, Button, Stack } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useUserContext } from '../../contexts/userContext'
 
@@ -20,12 +20,18 @@ function CustomNavbar() {
             <Navbar.Collapse id='responsive-navbar-nav'>
                <Nav className='ms-auto'>
                   {user.email ? (
-                     <Button
-                        variant='outline-light'
-                        onClick={handleLogout}
+                     <Stack
+                        className='gap-4 text-white'
+                        direction='horizontal'
                      >
-                        Logout
-                     </Button>
+                        <span>{user.userName}</span>
+                        <Button
+                           variant='outline-light'
+                           onClick={handleLogout}
+                        >
+                           Logout
+                        </Button>
+                     </Stack>
                   ) : (
                      <>
                         <Link
