@@ -7,6 +7,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { UserContextProvider } from './contexts/userContext'
 import { TreeContextProvider } from './contexts/treesContext'
+import { AddTreePhaseContextProvider } from './contexts/addTreePhase'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -14,7 +15,9 @@ root.render(
       <BrowserRouter>
          <UserContextProvider>
             <TreeContextProvider>
-               <App />
+               <AddTreePhaseContextProvider>
+                  <App />
+               </AddTreePhaseContextProvider>
             </TreeContextProvider>
          </UserContextProvider>
       </BrowserRouter>

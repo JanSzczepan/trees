@@ -15,7 +15,10 @@ function CustomNavbar() {
          variant='dark'
       >
          <Container>
-            <Link to='/'>
+            <Link
+               to='/'
+               className='text-decoration-none'
+            >
                <Navbar.Brand>Trees</Navbar.Brand>
             </Link>
             <Navbar.Toggle aria-controls='responsive-navbar-nav' />
