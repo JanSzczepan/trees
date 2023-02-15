@@ -1,10 +1,13 @@
 import { Button, Stack } from 'react-bootstrap'
 import { ArrowRepeat } from 'react-bootstrap-icons'
+import { Link } from 'react-router-dom'
 import { useTreeContext } from '../../contexts/treesContext'
 import TreeCard from '../TreeCard/TreeCard'
 
 function Explore() {
    const { randomTrees, trees, getRandomTrees } = useTreeContext()
+
+   const isMoreThanThree = trees.length > 3
 
    return (
       <section>
@@ -12,8 +15,8 @@ function Explore() {
             direction='horizontal'
             className='mb-4'
          >
-            <h3 className='me-auto'>Explore Trees</h3>
-            {trees.length > 3 && (
+            <h3 className='me-auto mb-0'>Explore Trees</h3>
+            {isMoreThanThree && (
                <Button
                   variant='primary'
                   onClick={getRandomTrees}
@@ -28,6 +31,11 @@ function Explore() {
                key={tree.id}
             />
          ))}
+         {isMoreThanThree && (
+            <Link to='/all-trees'>
+               <span>See all trees</span>
+            </Link>
+         )}
       </section>
    )
 }
