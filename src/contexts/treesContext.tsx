@@ -16,6 +16,7 @@ import {
    getDocs,
    query,
    QuerySnapshot,
+   updateDoc,
    where,
 } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -41,8 +42,11 @@ type TreeContextType = {
    randomTrees: Tree[]
    yourTrees: Tree[]
    addTree: (treeForm: TreeForm) => void
+   updateTree: (treeToUpdate: Tree) => void
    getRandomTrees: () => void
    deleteTree: (id: string) => void
+   treeToUpdate: Tree | undefined
+   setTreeToUpdate: (tree: Tree) => void
    isLoading: boolean
 }
 
@@ -51,8 +55,11 @@ const TreeContext = createContext<TreeContextType>({
    randomTrees: [],
    yourTrees: [],
    addTree: () => {},
+   updateTree: () => {},
    getRandomTrees: () => {},
    deleteTree: () => {},
+   treeToUpdate: undefined,
+   setTreeToUpdate: () => {},
    isLoading: false,
 })
 
@@ -75,6 +82,7 @@ export function TreeContextProvider({ children }: ProviderProps) {
    const [randomTrees, setRandomTrees] = useState<Tree[]>([])
    const [yourTrees, setYourTrees] = useState<Tree[]>([])
    const [isLoading, setIsLoading] = useState<boolean>(false)
+   const [treeToUpdate, setTreeToUpdate] = useState<Tree | undefined>(undefined)
 
    const { user } = useUserContext()
 
@@ -126,6 +134,20 @@ export function TreeContextProvider({ children }: ProviderProps) {
       [treesCollectionRef, getTrees]
    )
 
+   const updateTree = useCallback(
+      async (tToUpdate: Tree) => {
+         setIsLoading(true)
+
+         const docRef = doc(db, 'trees', tToUpdate.id)
+         await updateDoc(docRef, tToUpdate)
+         await getTrees()
+
+         setTreeToUpdate(undefined)
+         setIsLoading(false)
+      },
+      [getTrees]
+   )
+
    const deleteTree = useCallback(
       async (id: string) => {
          setIsLoading(true)
@@ -155,8 +177,11 @@ export function TreeContextProvider({ children }: ProviderProps) {
          randomTrees,
          yourTrees,
          addTree,
+         updateTree,
          getRandomTrees,
          deleteTree,
+         treeToUpdate,
+         setTreeToUpdate,
          isLoading,
       }),
       [
@@ -164,8 +189,11 @@ export function TreeContextProvider({ children }: ProviderProps) {
          randomTrees,
          yourTrees,
          addTree,
+         updateTree,
          getRandomTrees,
          deleteTree,
+         treeToUpdate,
+         setTreeToUpdate,
          isLoading,
       ]
    )

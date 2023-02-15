@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useAddTreePhaseContext } from '../../contexts/addTreePhase'
-import { useTreeContext } from '../../contexts/treesContext'
+import { Tree, useTreeContext } from '../../contexts/treesContext'
 import { useUserContext } from '../../contexts/userContext'
 import AddTreeHeader from './AddTreeHeader'
 import BackNextButtons from './AddTreePhases/BackNextButtons'
@@ -10,20 +10,26 @@ import Info, { TreeForm } from './AddTreePhases/Info'
 import Location from './AddTreePhases/Location'
 import Summary from './AddTreePhases/Summary'
 
-function AddTree() {
-   const [tree, setTree] = useState<TreeForm>({
-      name: '',
-      description: '',
-      street: '',
-      city: '',
-      location: {
-         Latitude: 0,
-         Longitude: 0,
-      },
-   })
+type AddTreeProps = {
+   treeToUpdate?: Tree
+}
+
+function AddTree({ treeToUpdate }: AddTreeProps) {
+   const [tree, setTree] = useState<TreeForm | Tree>(
+      treeToUpdate || {
+         name: '',
+         description: '',
+         street: '',
+         city: '',
+         location: {
+            Latitude: 0,
+            Longitude: 0,
+         },
+      }
+   )
 
    const { user } = useUserContext()
-   const { addTree, isLoading } = useTreeContext()
+   const { addTree, updateTree, isLoading } = useTreeContext()
    const { addTreePhase, changeAddTreePhase } = useAddTreePhaseContext()
    const navigate = useNavigate()
 
@@ -85,7 +91,16 @@ function AddTree() {
          )
          handleBack = () => changeAddTreePhase('location')
          handleNext = () => {
-            addTree({ ...tree, authorId: user.uid })
+            if (treeToUpdate) {
+               updateTree({
+                  ...tree,
+                  authorId: user.uid,
+                  id: treeToUpdate.id,
+               })
+            } else {
+               addTree({ ...tree, authorId: user.uid })
+            }
+
             navigate('/')
             changeAddTreePhase('info')
          }
@@ -121,6 +136,10 @@ function AddTree() {
          </Form>
       </main>
    )
+}
+
+AddTree.defaultProps = {
+   treeToUpdate: undefined,
 }
 
 export default AddTree
