@@ -11,6 +11,8 @@ import {
    addDoc,
    collection,
    CollectionReference,
+   deleteDoc,
+   doc,
    getDocs,
    query,
    QuerySnapshot,
@@ -40,6 +42,7 @@ type TreeContextType = {
    yourTrees: Tree[]
    addTree: (treeForm: TreeForm) => void
    getRandomTrees: () => void
+   deleteTree: (id: string) => void
    isLoading: boolean
 }
 
@@ -49,6 +52,7 @@ const TreeContext = createContext<TreeContextType>({
    yourTrees: [],
    addTree: () => {},
    getRandomTrees: () => {},
+   deleteTree: () => {},
    isLoading: false,
 })
 
@@ -86,15 +90,23 @@ export function TreeContextProvider({ children }: ProviderProps) {
    const getYourTrees = useCallback(async () => {
       if (!user.uid) return
 
+      setIsLoading(true)
+
       const q = query(treesCollectionRef, where('authorId', '==', user.uid))
       const docs = (await getDocs(q)) as QuerySnapshot<Tree>
 
-      setYourTrees(docs.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      setYourTrees(docs.docs.map((d) => ({ ...d.data(), id: d.id })))
+
+      setIsLoading(false)
    }, [treesCollectionRef, user.uid])
 
    const getTrees = useCallback(async () => {
+      setIsLoading(true)
+
       const data = (await getDocs(treesCollectionRef)) as QuerySnapshot<Tree>
-      setTrees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      setTrees(data.docs.map((d) => ({ ...d.data(), id: d.id })))
+
+      setIsLoading(false)
    }, [treesCollectionRef])
 
    const addTree = useCallback(
@@ -114,6 +126,19 @@ export function TreeContextProvider({ children }: ProviderProps) {
       [treesCollectionRef, getTrees]
    )
 
+   const deleteTree = useCallback(
+      async (id: string) => {
+         setIsLoading(true)
+
+         const docRef = doc(db, 'trees', id)
+         await deleteDoc(docRef)
+         await getTrees()
+
+         setIsLoading(false)
+      },
+      [getTrees]
+   )
+
    useEffect(() => {
       getTrees()
    }, [getTrees])
@@ -131,9 +156,18 @@ export function TreeContextProvider({ children }: ProviderProps) {
          yourTrees,
          addTree,
          getRandomTrees,
+         deleteTree,
          isLoading,
       }),
-      [trees, randomTrees, yourTrees, addTree, getRandomTrees, isLoading]
+      [
+         trees,
+         randomTrees,
+         yourTrees,
+         addTree,
+         getRandomTrees,
+         deleteTree,
+         isLoading,
+      ]
    )
 
    return <TreeContext.Provider value={value}>{children}</TreeContext.Provider>

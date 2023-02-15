@@ -7,9 +7,10 @@ import Settings from './Settings'
 
 type TreeCardProps = {
    tree: Tree
+   isSettings?: boolean
 }
 
-function TreeCard({ tree }: TreeCardProps) {
+function TreeCard({ tree, isSettings = true }: TreeCardProps) {
    const [treeOwner, setTreeOwner] = useState<User>({
       email: '',
       name: '',
@@ -49,12 +50,18 @@ function TreeCard({ tree }: TreeCardProps) {
                         </cite>
                      </footer>
                   </div>
-                  {treeOwner.uid === user.uid && <Settings />}
+                  {treeOwner.uid === user.uid && isSettings && (
+                     <Settings id={tree.id} />
+                  )}
                </Stack>
             </Card.Body>
          </Card>
       </Col>
    )
+}
+
+TreeCard.defaultProps = {
+   isSettings: true,
 }
 
 export default TreeCard

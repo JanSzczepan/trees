@@ -1,7 +1,14 @@
 import { Button, Stack } from 'react-bootstrap'
 import { Pen, Trash } from 'react-bootstrap-icons'
+import { useTreeContext } from '../../contexts/treesContext'
 
-function Settings() {
+type SettingsProps = {
+   id: string
+}
+
+function Settings({ id }: SettingsProps) {
+   const { deleteTree, isLoading } = useTreeContext()
+
    return (
       <Stack gap={1}>
          <Button
@@ -13,6 +20,8 @@ function Settings() {
          <Button
             variant='outline-danger'
             className='py-1 px-2'
+            onClick={() => deleteTree(id)}
+            disabled={isLoading}
          >
             <Trash />
          </Button>

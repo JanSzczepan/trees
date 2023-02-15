@@ -1,4 +1,4 @@
-import { Button, Row, Stack } from 'react-bootstrap'
+import { Button, Row, Spinner, Stack } from 'react-bootstrap'
 import { ArrowLeftShort } from 'react-bootstrap-icons'
 import { Link } from 'react-router-dom'
 import TreeCard from '../../components/TreeCard/TreeCard'
@@ -11,7 +11,7 @@ type AllTreesProps = {
 }
 
 function AllTrees({ treesType }: AllTreesProps) {
-   const { trees, yourTrees } = useTreeContext()
+   const { trees, yourTrees, isLoading } = useTreeContext()
 
    const treesArr = treesType === 'all' ? trees : yourTrees
    const title =
@@ -35,18 +35,27 @@ function AllTrees({ treesType }: AllTreesProps) {
             </Link>
             <h3 className='mb-0 ms-3'>{title}</h3>
          </Stack>
-         <Row
-            xs={1}
-            md={2}
-            lg={3}
-         >
-            {treesArr.map((tree) => (
-               <TreeCard
-                  tree={tree}
-                  key={tree.id}
+         {isLoading ? (
+            <div className='py-3 w-100 d-flex justify-content-center'>
+               <Spinner
+                  animation='border'
+                  variant='primary'
                />
-            ))}
-         </Row>
+            </div>
+         ) : (
+            <Row
+               xs={1}
+               md={2}
+               lg={3}
+            >
+               {treesArr.map((tree) => (
+                  <TreeCard
+                     tree={tree}
+                     key={tree.id}
+                  />
+               ))}
+            </Row>
+         )}
       </main>
    )
 }

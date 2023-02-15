@@ -1,11 +1,11 @@
-import { Button, Stack } from 'react-bootstrap'
+import { Button, Spinner, Stack } from 'react-bootstrap'
 import { ArrowRepeat } from 'react-bootstrap-icons'
 import { Link } from 'react-router-dom'
 import { useTreeContext } from '../../contexts/treesContext'
 import TreeCard from '../TreeCard/TreeCard'
 
 function Explore() {
-   const { randomTrees, trees, getRandomTrees } = useTreeContext()
+   const { randomTrees, trees, getRandomTrees, isLoading } = useTreeContext()
 
    const isMoreThanThree = trees.length > 3
 
@@ -25,13 +25,20 @@ function Explore() {
                </Button>
             )}
          </Stack>
-         {randomTrees.map((tree) => (
-            <TreeCard
-               tree={tree}
-               key={tree.id}
+         {isLoading ? (
+            <Spinner
+               animation='border'
+               variant='primary'
             />
-         ))}
-         {isMoreThanThree && (
+         ) : (
+            randomTrees.map((tree) => (
+               <TreeCard
+                  tree={tree}
+                  key={tree.id}
+               />
+            ))
+         )}
+         {isMoreThanThree && !isLoading && (
             <Link to='/all-trees'>
                <span>See all trees</span>
             </Link>

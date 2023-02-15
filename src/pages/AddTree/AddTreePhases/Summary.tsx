@@ -24,7 +24,10 @@ function Summary({ formTree, disabled }: SummaryProps) {
    return disabled ? (
       <h3>Add all required informations about the tree</h3>
    ) : (
-      <TreeCard tree={tree} />
+      <TreeCard
+         tree={tree}
+         isSettings={false}
+      />
    )
 }
 
