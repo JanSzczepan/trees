@@ -6,6 +6,10 @@ export type TreeForm = {
    description: string
    street: string
    city: string
+   location: {
+      Latitude: number
+      Longitude: number
+   }
 }
 
 type InfoProps = {

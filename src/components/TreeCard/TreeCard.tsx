@@ -30,7 +30,7 @@ function TreeCard({ tree }: TreeCardProps) {
    }, [authorId, getUserData])
 
    return (
-      <Card>
+      <Card className='mb-3'>
          <Card.Body>
             <Card.Title>{name}</Card.Title>
             <Card.Text className='mb-2'>{description}</Card.Text>

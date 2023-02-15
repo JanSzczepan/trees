@@ -5,9 +5,10 @@ import { TreeForm } from './Info'
 
 type SummaryProps = {
    formTree: TreeForm
+   disabled: boolean
 }
 
-function Summary({ formTree }: SummaryProps) {
+function Summary({ formTree, disabled }: SummaryProps) {
    const { user } = useUserContext()
 
    const tree: Tree = {
@@ -20,7 +21,11 @@ function Summary({ formTree }: SummaryProps) {
       id: '',
    }
 
-   return <TreeCard tree={tree} />
+   return disabled ? (
+      <h3>Add all required informations about the tree</h3>
+   ) : (
+      <TreeCard tree={tree} />
+   )
 }
 
 export default Summary
