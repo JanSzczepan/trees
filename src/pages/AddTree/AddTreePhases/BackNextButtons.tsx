@@ -3,9 +3,14 @@ import { Button, Stack } from 'react-bootstrap'
 type BackNextButtonsProps = {
    handleBack: () => void
    handleNext: () => void
+   disabled: boolean
 }
 
-function BackNextButtons({ handleBack, handleNext }: BackNextButtonsProps) {
+function BackNextButtons({
+   handleBack,
+   handleNext,
+   disabled,
+}: BackNextButtonsProps) {
    return (
       <Stack
          gap={2}
@@ -21,6 +26,7 @@ function BackNextButtons({ handleBack, handleNext }: BackNextButtonsProps) {
          <Button
             variant='primary'
             onClick={handleNext}
+            disabled={disabled}
          >
             Next
          </Button>

@@ -12,6 +12,7 @@ function AddTreeHeader({ title, progress }: AddTreeHeaderProps) {
          <ProgressBar
             now={progress}
             label={progress ? `${progress.toFixed(0)}%` : ''}
+            className='mb-4'
          />
       </>
    )
