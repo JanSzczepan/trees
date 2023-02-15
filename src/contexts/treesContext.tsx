@@ -39,6 +39,7 @@ type TreeContextType = {
    randomTrees: Tree[]
    yourTrees: Tree[]
    addTree: (treeForm: TreeForm) => void
+   getRandomTrees: () => void
    isLoading: boolean
 }
 
@@ -47,6 +48,7 @@ const TreeContext = createContext<TreeContextType>({
    randomTrees: [],
    yourTrees: [],
    addTree: () => {},
+   getRandomTrees: () => {},
    isLoading: false,
 })
 
@@ -123,8 +125,15 @@ export function TreeContextProvider({ children }: ProviderProps) {
    }, [getYourTrees, trees])
 
    const value = useMemo(
-      () => ({ trees, randomTrees, yourTrees, addTree, isLoading }),
-      [trees, randomTrees, yourTrees, addTree, isLoading]
+      () => ({
+         trees,
+         randomTrees,
+         yourTrees,
+         addTree,
+         getRandomTrees,
+         isLoading,
+      }),
+      [trees, randomTrees, yourTrees, addTree, getRandomTrees, isLoading]
    )
 
    return <TreeContext.Provider value={value}>{children}</TreeContext.Provider>
