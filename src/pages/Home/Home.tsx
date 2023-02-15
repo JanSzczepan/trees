@@ -7,9 +7,11 @@ import { useUserContext } from '../../contexts/userContext'
 function Home() {
    const { user } = useUserContext()
 
+   const title = user.name ? `Hello, ${user.name}` : 'Hello, good to see you'
+
    return (
       <main className='p-4'>
-         <h3 className='mb-5'>Hello, {user.name}</h3>
+         <h3 className='mb-5'>{title}</h3>
          <Row
             xs={1}
             md={2}
