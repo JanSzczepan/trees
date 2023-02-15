@@ -62,7 +62,7 @@ function AddTree() {
       case 'summary':
          title = '3. Summary'
          progress = (3 / 3) * 100
-         phaseComponent = <Summary />
+         phaseComponent = <Summary formTree={tree} />
          handleBack = () => changeAddTreePhase('location')
          handleNext = () => {
             navigate('/')
