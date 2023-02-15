@@ -50,9 +50,9 @@ function TreeCard({ tree, isSettings = true }: TreeCardProps) {
                         </cite>
                      </footer>
                   </div>
-                  {treeOwner.uid === user.uid && isSettings && (
-                     <Settings id={tree.id} />
-                  )}
+                  {!!treeOwner.name &&
+                     treeOwner.uid === user.uid &&
+                     isSettings && <Settings id={tree.id} />}
                </Stack>
             </Card.Body>
          </Card>

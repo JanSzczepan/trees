@@ -26,7 +26,6 @@ function Settings({ id }: SettingsProps) {
          >
             <Pen />
          </Button>
-
          <Button
             variant='outline-danger'
             className='py-1 px-2'
