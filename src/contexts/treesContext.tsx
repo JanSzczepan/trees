@@ -121,13 +121,6 @@ export function TreeContextProvider({ children }: ProviderProps) {
       async (tree: TreeForm) => {
          setIsLoading(true)
          await addDoc<TreeForm>(treesCollectionRef, tree)
-         // const q = query(treesCollectionRef, where('id', '==', data.id))
-         // const docs = (await getDocs(q)) as QuerySnapshot<Tree>
-         // const t: Tree[] = docs.docs.map((doc) => ({
-         //    ...doc.data(),
-         //    id: doc.id,
-         // }))
-         // setTrees((prevState) => [...prevState, ...t])
          await getTrees()
          setIsLoading(false)
       },
